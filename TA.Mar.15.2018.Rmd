@@ -1,0 +1,211 @@
+---
+title: "EDA best of"
+output: 
+  html_document:
+    theme: lumen
+    toc: true
+    toc_depth: 2
+    toc_float: 
+      collapsed: false
+    df_print: paged
+---
+<div id="date">TA course: Mar.15.2018,Lai</div>
+```{r results="asis",echo=F}
+cat("
+<style>
+.reference {
+  color: grey;
+  font-size:11px;
+}
+#temp {
+  font-size:25px;
+}
+#date {
+  font-size:9px;
+  color: grey;
+}
+
+* {
+  font-size=15px;
+}
+h1, h2, h3 {
+  color:;
+  margin-top:40px;
+  margin-bottom: 30px;
+  //border-top:1px solid grey;
+  padding-top:10px
+}
+h1 {
+  border-bottom : 1px solid grey;
+}
+
+h2 {
+  padding-bottom : 6px;
+  border-bottom : 1px solid   #cccccc
+;
+}
+.r {
+  margin-top:15px;
+  //font-size:18px;
+}
+body {
+  //border-bottom:10px solid;
+}
+span.highlight {
+  color:  #009900 ;
+  background-color: #e6e6e6;
+  font-size=55 px;
+
+}
+
+</style>
+")
+```
+
+
+## Tips 1 : table()
+table() 可用於計算一維向量中的數值個數、也可用於data.frame，甚至是產生二維以上的列連表做類別資料分析。table()後面通常會接<span class="highlight",id="temp">barplot()</span>做長條圖的視覺化。
+
+
+```{r}
+attach(iris)
+library(ggplot2)
+library(magrittr)
+#計算Species各有幾個
+table(Species)  
+#畫長條圖
+table(Species) %>% barplot()
+
+```
+
+做資料篩選時確認個數很有用 
+```{r}
+#Petal.Length大於5的個數
+t1 = table(Petal.Length>5)
+#或者巧妙的計算比率
+t2 = table(Petal.Length>5)/length(Petal.Length)
+t1;t2
+```
+
+ps.可用<span class="highlight">names()</span>函數修改table名稱
+```{r}
+t1 = table(Petal.Length>5)  
+t2 = table(Petal.Length>5)
+names(t2) = c("bigger","smaller")
+par(mfrow=c(1,2))
+barplot(t1);barplot(t2)
+```
+
+二維列連表範例：2016/8/9的政大員工出缺席表
+```{r}
+#生產行一一家人
+sin_bros = sapply(1:50,function(x){
+  paste("行",x,sep="")
+})
+set.seed(689)
+df1 = data.frame(name=sin_bros,
+                 late=sample(c("遲到","準時"),50,replace = T),
+                 overtime = sample(c("加班","早退","準時打卡"),50,r=T),
+                 salary=(salary<-rpois(50,25)*1000),
+                 prev_salary = round(salary*0.88+rnorm(50,1000,2000),-2),
+                 iq = rpois(50,110),
+                 gender=factor(sample(c("M","F"),50,r=T)),
+                 hobby = factor(sample(c("cook","read","learn Eng","swim"),50,r=T))
+                 )
+
+head(df1);table(df1$late,df1$overtime)
+```
+
+補充：table()函數會回傳一個table類別(用<span class="highlight">class()</span>檢查)，可以用<span class="highlight">as.data.frame()</span>將其轉為data.frame，以利後續分析或使用<span class="highlight">ggplot()</span>
+```{r}
+table(Species) %>% as.data.frame() %>% ggplot(aes(x=Species, y=Freq)) +
+  geom_bar(stat="identity")
+```
+
+## Tips 2 : which()
+which()可以用來篩選觀測值，找出觀測值的index，這步驟很重要一定要會rrr
+
+```{r}
+#誰被霸凌
+which(df1$salary<22000)
+
+#用length()計算個數
+which(df1$salary <22000) %>% length()
+```
+
+也可以拿來篩選data.frame(或者使用<span class="highlight">subset()</span> )
+```{r rows.print=5}
+## 篩選data.frame()
+## ps. 篩選結果若要重複使用，可以用變數儲存起來，像是這樣:
+## sel = which(df1$salary<22000)
+## df1[sel,]
+df1[which(df1$salary<22000),]
+```
+
+如果要進行複合性的分析，使用邏輯運算子<span class="highlight">&(and)</span>，<span class="highlight">|(或)</span>:
+
+```{r}
+which(df1$gender=='F' & df1$iq>120 & df1$salary>22000)  %>% df1[.,]
+
+# 補充潮潮寫法
+# df1 %$% which(gender=='F' & iq>1020 & salary>22000) %>% df1[.,]
+```
+
+## Tips 3 : aggregate()
+透過類別變數將data分組，並計算敘述統計，之後會其它套件可能就不會用了qq
+
+```{r}
+aggregate(salary~hobby,mean ,data=df1)
+```
+
+## Tips 4 : summary()
+計算最重要的幾個敘述統計，一次全包豪爽
+
+```{r}
+df1$salary %>% summary()
+```
+
+也可以這樣寫，看得懂嗎?
+ 
+```{r}
+male = which(df1$gender=="M")
+female = which(df1$gender=='F')
+df1 %$% summary(salary[male]) - summary(salary[female])
+```
+
+## Tips 5 : 散佈圖 plot()
+看兩個變數的散佈趨勢
+```{r}
+par(mfrow=c(1,2))
+#薪水與上一份工作的薪水相關嗎
+plot(df1$prev_salary,df1$salary,main="prev. salary vs salary")
+#薪水與IQ相關嗎
+plot(df1$iq,df1$salary,main="IQ vs salary")
+```
+
+ggplot2 的分組圖表
+(想用ggplot2，就去google "ggplot2"+圖表，就有教學與程式可以抄)
+```{r}
+ggplot(df1, aes(x=prev_salary, y=salary, color=gender)) +
+  geom_point()
+```
+
+
+其實R內建繪圖函數也能辦到，但要注意X與Y的範圍(透過參數<span class="highlight">xlim</span>,<span class="highlight">ylim</span>去調整)，仔細比較一下兩張圖的不同！
+```{r}
+df1[male,] %$% plot(prev_salary,salary,pch=19,col="blue",
+                    xlim=c(min(df1$prev_salary),max(df1$prev_salary)),
+                    main="plot() is powerful but ugly")
+df1[female,] %$% points(prev_salary,salary,pch=19,col="red")
+legend("bottomright",c("male","female"),col=c("blue","red"),pch=19)
+```
+
+## Tips 6 : 分配圖: hist()、density()
+```{r}
+par(mfrow=c(1,2))
+#直方圖
+df1$salary %>% hist()
+#平滑過的分配圖
+df1$salary %>% density() %>% plot()
+```
+
