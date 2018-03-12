@@ -77,7 +77,7 @@ To archive its humble aims, magrittr (remember the accent) provides a new “pip
 
 簡單說，pipe operator是一個傳遞數值或物件的方法，它能讓你的程式變得優雅易讀，<span class="highlight2">
 但未必會增加運行速度。</span>  
-另外，pipe operator也應用於許多重要套件如<span class="highlight">ggplot2</span>、<span class="highlight">dplyr>/span>之中，可以說是進階R技巧的一堂必修課。
+另外，pipe operator也應用於許多重要套件如<span class="highlight">ggplot2</span>、<span class="highlight">dplyr</span>之中，可以說是進階R技巧的一堂必修課。
 
 
 ## Using pipe operator '%>%'
