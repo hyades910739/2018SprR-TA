@@ -1,5 +1,5 @@
 ---
-title: "EDA best of"
+title: "TA1 : EDA best of"
 output: 
   html_document:
     theme: lumen
@@ -96,7 +96,7 @@ par(mfrow=c(1,2))
 barplot(t1);barplot(t2)
 ```
 
-二維列連表範例：2016/8/9的政大員工出缺席表
+二維列連表範例：2017/8/9的政大員工出缺席表
 ```{r}
 #生產行一一家人
 sin_bros = sapply(1:50,function(x){
