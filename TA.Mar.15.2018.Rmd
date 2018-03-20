@@ -3,6 +3,10 @@ title: "TA1 : EDA best of"
 output: 
   html_document:
     theme: lumen
+    toc: true
+    toc_depth: 2
+    toc_float: 
+      collapsed: false
     df_print: paged
 ---
 <div id="date">TA course: Mar.15.2018,Lai</div>
