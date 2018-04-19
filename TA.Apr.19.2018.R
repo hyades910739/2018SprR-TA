@@ -247,6 +247,33 @@ fit2 = glm(y~age+job+marital+education+emp.var.rate+
 summary(fit1)
 summary(fit2)
 anova(fit2)
+### interpret
+## to see a specific case, create an example observation
+bankexp = banktr[1,]
+bankexp$age = 40
+bankexp$education = "university.degree"
+bankexp$job = "management"
+bankexp$marital = "married"
+# the prob. is:
+predict(fit1,new=bankexp,type="response") #prob. 0.07407
+# log odds:
+predict(fit1,new=bankexp,type="link") #-2.525852 
+# prob is same as:
+exp(-2.525852 )/(1+exp(-2.525852))
+
+## interpret the coefficient effect:
+bankexp$age %<>% add(1)
+predict(fit1,new=bankexp,type="response") #prob. 0.07590
+bankexp$age %<>% add(1)
+predict(fit1,new=bankexp,type="response") #prob. 0.07777
+#exp(age) =  exp(0.02638) = 1.0267
+# odds(age=41)/odds(age=40)
+(0.07590/0.92410)/(0.07407/0.92593)
+# odds(age=42)/odds(age=41)
+(0.07777/0.92223)/((0.07590/0.92410))
+#different not the same:
+c(0.07407,0.07590,0.07777) %>% diff()
+
 ### model comparision
 anova(fit1,fit2,test = "LRT")
 
@@ -255,6 +282,7 @@ anova(fit1,fit2,test = "LRT")
 pred.p1 = predict(fit1,bankte,type="response")
 pred1 = ifelse(pred.p1>mean(bank$y),1,0)
 pred1 %>% table()
+
 
 ## confusion matrix:
 confu1 = table(bankte$y,pred1) %T>% print()
@@ -271,7 +299,6 @@ auc = performance(pr, measure = "auc")
 (auc = auc@y.values[[1]])
 plot(prf)
 abline(a=0,b=1,col="red",lty=2)
-
 
 ## multiple ROC Curve:
 pred.p2 = predict(fit2,bankte,type="response")
