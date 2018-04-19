@@ -179,6 +179,8 @@ crab = "1        2        3     28.3     3.05        8
 171        2        3     26.5     2.75        7
 172        3        3     26.1     2.75        3
 173        2        2     24.5     2.00        0"
+
+
 ## prepare data
 temp = crab %>% strsplit("\n") %>% .[[1]] 
 df_crab = sapply(temp,function(x){
@@ -189,9 +191,6 @@ df_crab = df_crab[,2:dim(df_crab)[2]]
 colnames(df_crab) = c("color","spineCondition","weight","carapaceWidth","Satel")
 df_crab$color %<>%  as.factor()
 df_crab$spineCondition %<>%  as.factor()
-#sel = sample(1:173,20,F)
-#train = df_crab[-sel,]
-#test = df_crab[sel,]
 
 ### possion regression:
 model = glm(Satel~weight,family=poisson(link=log),data=df_crab)
@@ -201,7 +200,7 @@ summary(model)
 
 #liklihood ratio test
 anova(model,model2,test="LRT")
-stats::predict(model,new=test)
+
 
 #########################
 ## logistic regression:
