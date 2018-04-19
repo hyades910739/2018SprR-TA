@@ -10,6 +10,6 @@
 
 * TA3 : [Learning pipe](https://hyades910739.github.io/2018SprR-TA/TA.Mar.29.2018.html)
 
-* TA5 : TA.Apr.19.2018.R
+* TA5 : Poisson Regression and Logistic Regression(TA.Apr.19.2018.R)
 
      
