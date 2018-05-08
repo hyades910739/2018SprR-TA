@@ -12,4 +12,6 @@
 
 * TA5 : Poisson Regression and Logistic Regression(TA.Apr.19.2018.R)
 
-     
+* TA7 : [爬蟲進階：利用Google Map API 找出地址的經緯度](https://hyades910740.github.io/2018SprR-TA/TA.May.10.2018.html) 
+
+
