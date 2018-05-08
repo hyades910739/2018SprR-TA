@@ -1,0 +1,104 @@
+---
+title: "利用Google Map API 找出地址的經緯度"
+author: "Lai"
+date: ""
+output: 
+  html_document:
+    theme: lumen
+    df_print: paged
+---
+
+在使用開放式資料時，有時會有地址或其他地理資訊，如果要進行地圖視覺化，或者想進一步分析路程、距離，都會需要經緯度的資訊。這時候，我們就可以透過google map提供的API來找出地址、地名對應的經緯度。
+
+詳細資訊可以參考：https://developers.google.com/maps/documentation/geocoding/intro?hl=zh-tw
+
+...   
+..   
+.    
+好OK，假設你懶得看文件，那可以直接參考下面這行網址，透過這行網址就可以得到你要的經緯度資料(以JSON格式回傳)
+
+> http://maps.google.com/maps/api/geocode/json?address=你的地址&language=zh-TW
+
+實際示範一次
+```{r, warning=F,message=F}
+library(magrittr) #pipe
+library(RCurl) #scratch 
+library(jsonlite) #read JSON 
+url = "http://maps.google.com/maps/api/geocode/json?address=政治大學&language=zh-TW"
+url %>% RCurl::getURL() %>% jsonlite::fromJSON()
+```
+
+注意，有時候回傳的是錯誤結果，可以透過$status 檢驗，失敗的話就在抓一次吧。  
+
+假設成功抓取，那應該會回傳一串畸胎的東西，回傳的結果包括地址、經緯度、還有地址類型。用fromJSON讀取後，就會變成我們熟悉的R物件。下面我簡單寫了一個程式，歡迎大家直接複製。  
+
+```{r}
+getLoc = function(query){
+   url = "http://maps.google.com/maps/api/geocode/json?address="
+   req = paste(url,query,"&language=zh-TW",sep="")
+   repeat{
+     res = getURL(req) %>% fromJSON()
+     if(res$status=="OK") break
+     Sys.sleep(1)
+   }
+   ## get result
+   loc = res$results$geometry$location[1,]
+   loc_type = res$results$geometry$location_type[1]
+   address = res$results$formatted_address[1]
+   type = paste(res$results$types[[1]],collapse ="|") 
+   res = c(query,loc[1,1],loc[1,2],loc_type,address,type)
+   names(res) = c("query","lat","lng","loc_type","address","types")
+   return(res)
+}
+```
+
+
+### 範例：政大沙漠地圖
+#### 資料處理:
+```{r warning=F,message=F}
+#餐廳名稱
+restaurant = c("李氏兄弟","里克德義廚房","政大羹大王","政大香香","老薑咖啡","JuicyBun","政大+小曼谷","舒曼六號","政大烤場","政大+滇味廚房","小公寓","my麵屋")
+#餐廳類型
+type = c("西式","西式","台式","台式","咖啡","美式","雲泰","西式","宵夜","雲泰","咖啡","台式")
+df_temp = data.frame(restaurant,type,stringsAsFactors = F)
+#抓取經緯度，建立data frame
+info = sapply(restaurant,getLoc) %>% t() %>% as.data.frame()
+info$query %<>% as.character()
+info$lat %<>% as.character() %>% as.numeric()
+info$lng %<>% as.character() %>% as.numeric()
+#Merge
+df_rest = merge(df_temp,info,by.x="restaurant",by.y="query")
+df_rest %>% head()
+```
+
+#### 資料視覺化：
+```{r}
+library(leaflet)
+## make custiom icon
+col = factor(df_rest$type)
+levels(col) = c("red","orange","green","blue","pink","gray")
+icons <- awesomeIcons(
+  icon = 'ios-close',
+  iconColor = 'black',
+  library = 'ion',
+  markerColor = as.character(col)
+)
+
+map <- leaflet(df_rest) %>%
+  addTiles()  %>% 
+  setView(lng=mean(df_rest$lng),lat=mean(df_rest$lat),zoom=16) %>% 
+  addAwesomeMarkers(~lng, ~lat, icon=icons,
+                    popup=~sub(".*\\+","",restaurant))
+map
+```
+
+
+### 延伸議題  
+
+* 利用shiny製作互動地圖(篩選不同價位、類別的餐廳來顯示)
+* 爬資料來"評價"這些餐廳(例如痞客邦的食記)
+
+<br>
+<br>
+
+
