@@ -15,6 +15,7 @@ output:
 ...   
 ..   
 .    
+<br>
 好OK，假設你懶得看文件，那可以直接參考下面這行網址，透過這行網址就可以得到你要的經緯度資料(以JSON格式回傳)
 
 > http://maps.google.com/maps/api/geocode/json?address=你的地址&language=zh-TW
@@ -22,7 +23,7 @@ output:
 實際示範一次
 ```{r, warning=F,message=F}
 library(magrittr) #pipe
-library(RCurl) #scratch 
+library(RCurl) #crawler 
 library(jsonlite) #read JSON 
 url = "http://maps.google.com/maps/api/geocode/json?address=政治大學&language=zh-TW"
 url %>% RCurl::getURL() %>% jsonlite::fromJSON()
@@ -72,7 +73,7 @@ df_rest %>% head()
 ```
 
 #### 資料視覺化：
-```{r}
+```{r fig.align='center',fig.width=10,fig.height=6}
 library(leaflet)
 ## make custiom icon
 col = factor(df_rest$type)
@@ -86,7 +87,7 @@ icons <- awesomeIcons(
 
 map <- leaflet(df_rest) %>%
   addTiles()  %>% 
-  setView(lng=mean(df_rest$lng),lat=mean(df_rest$lat),zoom=16) %>% 
+  setView(lng=mean(df_rest$lng),lat=mean(df_rest$lat),zoom=17) %>% 
   addAwesomeMarkers(~lng, ~lat, icon=icons,
                     popup=~sub(".*\\+","",restaurant))
 map

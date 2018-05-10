@@ -143,13 +143,13 @@ $(document).ready(function () {
 <p>…<br />
 ..<br />
 .<br />
-好OK，假設你懶得看文件，那可以直接參考下面這行網址，透過這行網址就可以得到你要的經緯度資料(以JSON格式回傳)</p>
+<br> 好OK，假設你懶得看文件，那可以直接參考下面這行網址，透過這行網址就可以得到你要的經緯度資料(以JSON格式回傳)</p>
 <blockquote>
 <p><a href="http://maps.google.com/maps/api/geocode/json?address=你的地址&amp;language=zh-TW" class="uri">http://maps.google.com/maps/api/geocode/json?address=你的地址&amp;language=zh-TW</a></p>
 </blockquote>
 <p>實際示範一次</p>
 <pre class="r"><code>library(magrittr) #pipe
-library(RCurl) #scratch 
+library(RCurl) #crawler 
 library(jsonlite) #read JSON 
 url = &quot;http://maps.google.com/maps/api/geocode/json?address=政治大學&amp;language=zh-TW&quot;
 url %&gt;% RCurl::getURL() %&gt;% jsonlite::fromJSON()</code></pre>
@@ -226,12 +226,12 @@ icons &lt;- awesomeIcons(
 
 map &lt;- leaflet(df_rest) %&gt;%
   addTiles()  %&gt;% 
-  setView(lng=mean(df_rest$lng),lat=mean(df_rest$lat),zoom=16) %&gt;% 
+  setView(lng=mean(df_rest$lng),lat=mean(df_rest$lat),zoom=17) %&gt;% 
   addAwesomeMarkers(~lng, ~lat, icon=icons,
                     popup=~sub(&quot;.*\\+&quot;,&quot;&quot;,restaurant))
 map</code></pre>
-<div id="htmlwidget-df972b452ab172a0d1b3" style="width:672px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-df972b452ab172a0d1b3">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"maxNativeZoom":null,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":null,"unloadInvisibleTiles":null,"updateWhenIdle":null,"detectRetina":false,"reuseTiles":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addAwesomeMarkers","args":[[24.98518,24.9889073,24.989768,24.9878222,24.9876541,24.9873453,24.9882864,24.9873737,24.9875006,24.9876362,24.9881598,24.9883459],[121.579891,121.5736643,121.573614,121.5759382,121.5754547,121.577687,121.5735044,121.5773126,121.5769936,121.5756508,121.5760679,121.5742459],{"icon":"ios-close","markerColor":["red","blue","blue","blue","red","gray","gray","green","pink","green","orange","green"],"iconColor":"black","spin":false,"squareMarker":false,"iconRotate":0,"font":"monospace","prefix":"ion"},null,null,{"clickable":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},["老薑咖啡","里克德義廚房","李氏兄弟","舒曼六號","小公寓","滇味廚房","小曼谷","政大羹大王","政大烤場","政大香香","JuicyBun","my麵屋"],null,null,null,null,null,null]}],"setView":[[24.987831625,121.575835366667],16,[]],"limits":{"lat":[24.98518,24.989768],"lng":[121.5735044,121.579891]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-fbe7ce192e9940af9c93" style="width:960px;height:576px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-fbe7ce192e9940af9c93">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"maxNativeZoom":null,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":null,"unloadInvisibleTiles":null,"updateWhenIdle":null,"detectRetina":false,"reuseTiles":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addAwesomeMarkers","args":[[24.98518,24.9889073,24.989768,24.9878222,24.9876541,24.9873453,24.9882864,24.9873737,24.9875006,24.9876362,24.9881598,24.9883459],[121.579891,121.5736643,121.573614,121.5759382,121.5754547,121.577687,121.5735044,121.5773126,121.5769936,121.5756508,121.5760679,121.5742459],{"icon":"ios-close","markerColor":["red","blue","blue","blue","red","gray","gray","green","pink","green","orange","green"],"iconColor":"black","spin":false,"squareMarker":false,"iconRotate":0,"font":"monospace","prefix":"ion"},null,null,{"clickable":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},["老薑咖啡","里克德義廚房","李氏兄弟","舒曼六號","小公寓","滇味廚房","小曼谷","政大羹大王","政大烤場","政大香香","JuicyBun","my麵屋"],null,null,null,null,null,null]}],"setView":[[24.987831625,121.575835366667],17,[]],"limits":{"lat":[24.98518,24.989768],"lng":[121.5735044,121.579891]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div class="section level3">
